@@ -1,0 +1,20 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: test-folders
+  annotations:
+    crossplane.io/external-name: gcp-aera-test
+spec:
+  forProvider:
+    source: Remote
+    module: git::https://github.com/terraform-google-modules/terraform-google-folders?ref=v5.0.0
+    vars:
+    - key: parent
+      value: "organizations/287428293008"
+    # - key: names
+    #   value: "[\"GCP Central Services\"]"
+
+  writeConnectionSecretToRef:
+    namespace: default
+    name: terraform-workspace-gcp-aera-test
+

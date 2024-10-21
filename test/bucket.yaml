@@ -1,0 +1,11 @@
+apiVersion: storage.gcp.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  generateName: crossplane-bucket-test-
+  labels:
+    docs.crossplane.io/test: provider-gcp
+spec:
+  forProvider:
+    location: us-central1
+  providerConfigRef:
+    name: default

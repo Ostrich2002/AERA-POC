@@ -1,0 +1,21 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: test-folders
+  annotations:
+    crossplane.io/external-name: gcp-aera-test
+spec:
+  forProvider:
+    source: Remote
+    module: git::https://github.com/aera-jawed/tf-gcp-infra//modules/google-folders?ref=v1.0.0
+    varFiles:
+    - source: SecretKey
+      secretKeyRef:
+        namespace: crossplane-system
+        name: gcp-folders-map
+        key: terraform.tfvars
+
+  writeConnectionSecretToRef:
+    namespace: crossplane-system
+    name: terraform-workspace-gcp-aera-test
+

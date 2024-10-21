@@ -1,0 +1,27 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: test-inline
+  annotations:
+    crossplane.io/external-name: gcp-aera-test
+spec:
+  forProvider:
+    source: Inline
+    module: |
+      output "url" {
+        value       = google_storage_bucket.test.self_link
+      }
+
+      resource "random_id" "test" {
+        byte_length = 4
+      }
+
+      resource "google_storage_bucket" "test" {
+        name = "crossplane-test-${terraform.workspace}-${random_id.test.hex}"
+        location      = "US"
+      }
+  writeConnectionSecretToRef:
+    namespace: default
+    name: terraform-workspace-gcp-aera-test
+
+
