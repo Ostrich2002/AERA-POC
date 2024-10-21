@@ -1,0 +1,19 @@
+apiVersion: container.gcp.upbound.io/v1beta1
+kind: Cluster
+metadata:
+  annotations:
+    meta.upbound.io/example-id: container/v1beta1/cluster
+  labels:
+    testing.upbound.io/example-name: cluster
+  name: temp-cluster
+spec:
+  forProvider:
+    deletionProtection: false
+    enableAutopilot: true
+    enableIntranodeVisibility: true
+    ipAllocationPolicy:
+      - {}
+    location: us-central1
+
+
+#correctly creates a cluster on gcp

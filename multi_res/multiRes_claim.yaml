@@ -1,0 +1,48 @@
+# apiVersion: gcp.crossplane.io/v1alpha1
+# kind: GCPInfrastructure
+# metadata:
+#   name: my-gcp-infra
+# spec:
+#   rootFolders:
+#     - folderName: "Root Folder 1"
+#     - folderName: "Root Folder 2"
+#   subfolders:
+#     - folderName: "Subfolder 1 under Root Folder 1"
+#       parentFolderIndex: 0  # Refers to the first root folder
+#     - folderName: "Subfolder 2 under Root Folder 1"
+#       parentFolderIndex: 0
+#     - folderName: "Subfolder 1 under Root Folder 2"
+#       parentFolderIndex: 1  # Refers to the second root folder
+#   projects:
+#     - projectName: "Project 1 in Subfolder 1"
+#       parentSubfolderIndex: 0  # Refers to the first subfolder under first root folder
+#     - projectName: "Project 2 in Subfolder 2"
+#       parentSubfolderIndex: 1  # Refers to the second subfolder under first root folder
+#     - projectName: "Project 3 in Subfolder 1 under Root Folder 2"
+#       parentSubfolderIndex: 2  # Refers to the first subfolder under second root folder
+#   clusterName: "my-cluster"
+#   location: "us-central1"  
+
+
+
+
+
+
+apiVersion: gcp.crossplane.io/v1alpha1
+kind: GCPInfrastructure
+metadata:
+  name: my-gcp-infra
+spec:
+  rootFolders:
+    - folderName: "Root Folder 1"
+    - folderName: "Root Folder 2"
+  subfolders:
+    - folderName: "Subfolder 1 under Root Folder 1"
+    - folderName: "Subfolder 2 under Root Folder 1"
+    - folderName: "Subfolder 1 under Root Folder 2"
+  projects:
+    - projectName: "Project 1 in Subfolder 1"
+    - projectName: "Project 2 in Subfolder 2"
+    - projectName: "Project 3 in Subfolder 1 under Root Folder 2"
+  clusterName: "my-cluster"
+  location: "us-central1"

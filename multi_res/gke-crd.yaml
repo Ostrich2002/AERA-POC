@@ -1,0 +1,23 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: gkeclusters.container.gcp.crossplane.io
+spec:
+  group: container.gcp.crossplane.io
+  names:
+    kind: GKECluster
+    plural: gkeclusters
+    singular: gkecluster
+  scope: Cluster
+  versions:
+    - name: v1beta1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+            status:
+              type: object

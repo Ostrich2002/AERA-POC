@@ -1,0 +1,107 @@
+# apiVersion: apiextensions.crossplane.io/v1
+# kind: CompositeResourceDefinition
+# metadata:
+#   name: xgcpinfra.gcp.crossplane.io
+# spec:
+#   group: gcp.crossplane.io
+#   names:
+#     kind: XGCPInfrastructure
+#     plural: xgcpinfrastructures
+#   claimNames:
+#     kind: GCPInfrastructure
+#     plural: gcpinfrastructures
+#   scope: Namespaced
+#   versions:
+#     - name: v1alpha1
+#       served: true
+#       referenceable: true
+#       schema:
+#         openAPIV3Schema:
+#           type: object
+#           properties:
+#             spec:
+#               type: object
+#               properties:
+#                 rootFolders:          # Array of root folders
+#                   type: array
+#                   items:
+#                     type: object
+#                     properties:
+#                       folderName:
+#                         type: string
+#                 subfolders:           # Array of subfolders
+#                   type: array
+#                   items:
+#                     type: object
+#                     properties:
+#                       folderName:
+#                         type: string
+#                       parentFolderIndex: # Reference to the index of the parent root folder
+#                         type: integer
+#                 projects:             # Array of projects
+#                   type: array
+#                   items:
+#                     type: object
+#                     properties:
+#                       projectName:
+#                         type: string
+#                       parentSubfolderIndex:  # Reference to the index of the parent subfolder
+#                         type: integer
+#                 clusterName:           # Single GKE cluster
+#                   type: string
+#                 location:              # Location for GKE cluster
+#                   type: string
+
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xgcpinfrastructures.gcp.crossplane.io  # Must match spec.names.plural + "." + spec.group
+spec:
+  group: gcp.crossplane.io
+  names:
+    kind: XGCPInfrastructure
+    plural: xgcpinfrastructures  # This plural is part of the metadata.name
+  claimNames:
+    kind: GCPInfrastructure
+    plural: gcpinfrastructures
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                rootFolders:          # Array of root folders
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      folderName:
+                        type: string
+                subfolders:           # Array of subfolders
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      folderName:
+                        type: string
+                      parentFolderIndex: # Reference to the index of the parent root folder
+                        type: integer
+                projects:             # Array of projects
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      projectName:
+                        type: string
+                      parentSubfolderIndex:  # Reference to the index of the parent subfolder
+                        type: integer
+                clusterName:           # Single GKE cluster
+                  type: string
+                location:              # Location for GKE cluster
+                  type: string

@@ -1,0 +1,42 @@
+---
+apiVersion: container.gcp.upbound.io/v1beta2
+kind: Cluster
+metadata:
+  annotations:
+    meta.upbound.io/example-id: container/v1beta1/cluster
+  labels:
+    testing.upbound.io/example-name: cluster
+  name: temp-cluster
+spec:
+  forProvider:
+    deletionProtection: false
+    enableAutopilot: false       # Autopilot disabled, you'll manage node pools
+    enableIntranodeVisibility: true
+    location: us-central1
+    initialNodeCount: 1          # Set the initial node count to 1
+  providerConfigRef:
+    name: default                # Reference to your provider config
+
+---
+apiVersion: container.gcp.upbound.io/v1beta2
+kind: NodePool
+metadata:
+  annotations:
+    meta.upbound.io/example-id: container/v1beta1/nodepool
+  labels:
+    testing.upbound.io/example-name: nodepool
+  name: temp-nodepool
+spec:
+  forProvider:
+    clusterRef:
+      name: temp-cluster              # Reference the cluster by name
+    initialNodeCount: 1
+    location: us-central1-a
+    nodeConfig:
+      machineType: e2-medium
+      preemptible: true
+  providerConfigRef:
+    name: default                # Reference to your provider config
+
+
+#this is not yet tested (given by chatgpt so doubtful (:  )

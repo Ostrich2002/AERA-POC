@@ -1,0 +1,342 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gcpinfra-composition
+spec:
+  compositeTypeRef:
+    apiVersion: gcp.crossplane.io/v1alpha1
+    kind: XGCPInfrastructure
+  resources:
+    # 1. Root Folder 1
+    - name: root-folder-1
+      base:
+        apiVersion: gcp.crossplane.io/v1beta1
+        kind: Folder
+
+        metadata:    #new addition
+          annotations:
+            crossplane.io/reconciliation-interval: "10m"  # Poll every 5 minutes
+
+        spec:
+          forProvider:
+            displayName: "Root Folder 1"
+            parentId: "organizations/824324338876"  # Replace with your Org ID
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.rootFolders[0].folderName"
+          toFieldPath: "spec.forProvider.displayName"
+
+    # 2. Root Folder 2
+    - name: root-folder-2
+      base:
+        apiVersion: gcp.crossplane.io/v1beta1
+        kind: Folder
+
+        metadata:    #new addition
+          annotations:
+            crossplane.io/reconciliation-interval: "10m"  # Poll every 5 minutes
+
+        spec:
+          forProvider:
+            displayName: "Root Folder 2"
+            parentId: "organizations/824324338876"  # Replace with your Org ID
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.rootFolders[1].folderName"
+          toFieldPath: "spec.forProvider.displayName"
+
+    # 3. Subfolder 1 (Child of Root Folder 1)
+    - name: sub-folder-1
+      base:
+        apiVersion: gcp.crossplane.io/v1beta1
+        kind: Folder
+
+        metadata:    #new addition
+          annotations:
+            crossplane.io/reconciliation-interval: "10m"  # Poll every 5 minutes
+
+        spec:
+          forProvider:
+            displayName: "Subfolder 1"
+            parentId: "folders/${root-folder-1}"  # Dynamically uses root folder ID
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.subfolders[0].folderName"
+          toFieldPath: "spec.forProvider.displayName"
+        - fromFieldPath: "spec.subfolders[0].parentFolderIndex"
+          toFieldPath: "spec.forProvider.parentId"
+          transforms:
+            - type: string
+              string:
+                fmt: "%d"  # Format integer as string
+
+    # 4. Subfolder 2 (Child of Root Folder 2)
+    - name: sub-folder-2
+      base:
+        apiVersion: gcp.crossplane.io/v1beta1
+        kind: Folder
+
+        metadata:    #new addition
+          annotations:
+            crossplane.io/reconciliation-interval: "10m"  # Poll every 5 minutes
+
+        spec:
+          forProvider:
+            displayName: "Subfolder 2"
+            parentId: "folders/${root-folder-2}"  # Dynamically uses root folder ID
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.subfolders[1].folderName"
+          toFieldPath: "spec.forProvider.displayName"
+        - fromFieldPath: "spec.subfolders[1].parentFolderIndex"
+          toFieldPath: "spec.forProvider.parentId"
+          transforms:
+            - type: string
+              string:
+                fmt: "%d"  # Format integer as string
+
+    # 5. Project 1 (Child of Subfolder 1)
+    - name: project-1
+      base:
+        apiVersion: gcp.crossplane.io/v1beta1
+        kind: Project
+
+        metadata:    #new addition
+          annotations:
+            crossplane.io/reconciliation-interval: "10m"  # Poll every 5 minutes
+
+        spec:
+          forProvider:
+            name: "project-1"
+            parent: "folders/${sub-folder-1}"  # Dynamically uses subfolder ID
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.projects[0].projectName"
+          toFieldPath: "spec.forProvider.name"
+        - fromFieldPath: "spec.projects[0].parentSubfolderIndex"
+          toFieldPath: "spec.forProvider.parent"
+          transforms:
+            - type: string
+              string:
+                fmt: "%d"  # Format integer as string
+
+    # 6. Project 2 (Child of Subfolder 2)
+    - name: project-2
+      base:
+        apiVersion: gcp.crossplane.io/v1beta1
+        kind: Project
+
+        metadata:    #new addition
+          annotations:
+            crossplane.io/reconciliation-interval: "10m"  # Poll every 5 minutes
+
+        spec:
+          forProvider:
+            name: "project-2"
+            parent: "folders/${sub-folder-2}"  # Dynamically uses subfolder ID
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.projects[1].projectName"
+          toFieldPath: "spec.forProvider.name"
+        - fromFieldPath: "spec.projects[1].parentSubfolderIndex"
+          toFieldPath: "spec.forProvider.parent"
+          transforms:
+            - type: string
+              string:
+                fmt: "%d"  # Format integer as string
+
+    # 7. GKE Cluster
+    - name: gke-cluster
+      base:
+        apiVersion: container.gcp.crossplane.io/v1beta1
+        kind: GKECluster
+
+        metadata:    #new addition
+          annotations:
+            crossplane.io/reconciliation-interval: "15m"  # Poll every 5 minutes
+
+        spec:
+          forProvider:
+            location: "us-central1"  # Replace with your region
+            initialClusterVersion: "1.21"  # Optional versioning
+            masterAuth:
+              username: "admin"
+              password: "password"
+            nodePools:
+              - name: "default-pool"
+                config:
+                  machineType: "n1-standard-1"
+                  diskSizeGb: 100
+                  oauthScopes:
+                    - https://www.googleapis.com/auth/devstorage.read_only
+            resourceLabels:
+              environment: production
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.clusterName"
+          toFieldPath: "metadata.name"  # Fixed to map to the correct field path for cluster name
+        # - fromFieldPath: "spec.location"
+        #   toFieldPath: "spec.forProvider.location"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#this worked but got the same rate limiting error
+# apiVersion: apiextensions.crossplane.io/v1
+# kind: Composition
+# metadata:
+#   name: gcpinfra-composition
+# spec:
+#   compositeTypeRef:
+#     apiVersion: gcp.crossplane.io/v1alpha1
+#     kind: XGCPInfrastructure
+#   resources:
+#     # 1. Root Folder 1
+#     - name: root-folder-1
+#       base:
+#         apiVersion: gcp.crossplane.io/v1beta1
+#         kind: Folder
+#         metadata:
+#           annotations:
+#             crossplane.io/reconciliation-interval: "5m"
+#         spec:
+#           forProvider:
+#             displayName: "Root Folder 1"
+#             parentId: "organizations/287428293008"
+#           providerConfigRef:
+#             name: gcp-provider
+#       patches:
+#         - fromFieldPath: "spec.rootFolders[0].folderName"
+#           toFieldPath: "spec.forProvider.displayName"
+
+#     # 2. Root Folder 2
+#     - name: root-folder-2
+#       base:
+#         apiVersion: gcp.crossplane.io/v1beta1
+#         kind: Folder
+#         metadata:
+#           annotations:
+#             crossplane.io/reconciliation-interval: "5m"
+#         spec:
+#           forProvider:
+#             displayName: "Root Folder 2"
+#             parentId: "organizations/287428293008"
+#           providerConfigRef:
+#             name: gcp-provider
+#       patches:
+#         - fromFieldPath: "spec.rootFolders[1].folderName"
+#           toFieldPath: "spec.forProvider.displayName"
+
+#     # 3. Subfolder 1 (Child of Root Folder 1)
+#     - name: sub-folder-1
+#       base:
+#         apiVersion: gcp.crossplane.io/v1beta1
+#         kind: Folder
+#         metadata:
+#           annotations:
+#             crossplane.io/reconciliation-interval: "15m"
+#         spec:
+#           forProvider:
+#             displayName: "Subfolder 1"
+#             parentId: ""  # You will need to manually handle how the parentId is set
+#           providerConfigRef:
+#             name: gcp-provider
+#       patches:
+#         - fromFieldPath: "spec.subfolders[0].folderName"
+#           toFieldPath: "spec.forProvider.displayName"
+
+#     # 4. Subfolder 2 (Child of Root Folder 2)
+#     - name: sub-folder-2
+#       base:
+#         apiVersion: gcp.crossplane.io/v1beta1
+#         kind: Folder
+#         metadata:
+#           annotations:
+#             crossplane.io/reconciliation-interval: "15m"
+#         spec:
+#           forProvider:
+#             displayName: "Subfolder 2"
+#             parentId: ""  # Handle parent folder ID assignment separately
+#           providerConfigRef:
+#             name: gcp-provider
+#       patches:
+#         - fromFieldPath: "spec.subfolders[1].folderName"
+#           toFieldPath: "spec.forProvider.displayName"
+
+#     # 5. Project 1 (Child of Subfolder 1)
+#     - name: project-1
+#       base:
+#         apiVersion: gcp.crossplane.io/v1beta1
+#         kind: Project
+#         metadata:
+#           annotations:
+#             crossplane.io/reconciliation-interval: "15m"
+#         spec:
+#           forProvider:
+#             name: "project-1"
+#             parent: ""  # Set the correct parent folder for the project
+#           providerConfigRef:
+#             name: gcp-provider
+#       patches:
+#         - fromFieldPath: "spec.projects[0].projectName"
+#           toFieldPath: "spec.forProvider.name"
+
+#     # 6. GKE Cluster (Patch the project from Project 1)
+#     - name: gke-cluster
+#       base:
+#         apiVersion: container.gcp.crossplane.io/v1beta1
+#         kind: GKECluster
+#         metadata:
+#           annotations:
+#             crossplane.io/reconciliation-interval: "25m"
+#         spec:
+#           forProvider:
+#             location: "us-central1"
+#             initialClusterVersion: "1.21"
+#             masterAuth:
+#               username: "admin"
+#               password: "password"
+#             nodePools:
+#               - name: "default-pool"
+#                 config:
+#                   machineType: "n1-standard-1"
+#                   diskSizeGb: 100
+#                   oauthScopes:
+#                     - https://www.googleapis.com/auth/devstorage.read_only
+#             resourceLabels:
+#               environment: production
+#             project: "projects/${project-1}"  # Correct reference to project
+#           providerConfigRef:
+#             name: gcp-provider
+#       patches:
+#         - fromFieldPath: "spec.clusterName"
+#           toFieldPath: "metadata.name"
+#         - fromFieldPath: "spec.projects[0].projectName"
+#           toFieldPath: "spec.forProvider.project"
