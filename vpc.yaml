@@ -1,0 +1,13 @@
+apiVersion: compute.gcp.upbound.io/v1beta1
+kind: Network
+metadata:
+  name: my-vpc                    # Name of the VPC
+  labels:
+    environment: dev              # Optional label for categorization
+spec:
+  forProvider:
+    autoCreateSubnetworks: false   # Set to false if you want to manually manage subnets
+    description: "My custom VPC for project"
+    routingMode: "REGIONAL"        # Choose between "REGIONAL" or "GLOBAL"
+  providerConfigRef:
+    name: default                  # Reference to the ProviderConfig you created
