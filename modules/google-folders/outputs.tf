@@ -4,9 +4,10 @@ output "folder_ids" {
 
 
 #new addition for projects
+# Output for project IDs and names
 output "project_ids" {
   description = "The project names and their corresponding IDs"
   value = { 
-    for k, v in module.projects : v.name => v.project_id
+    for k, v in module.projects : k => v.project_id
   }
 }
