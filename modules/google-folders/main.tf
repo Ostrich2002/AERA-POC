@@ -32,3 +32,38 @@ module "sub_folders2" {
   parent   = module.sub_folders1[element(split("=2>", each.value), 0)].id
   names    = [element(split("=2>", each.value), 1)]
 }
+
+
+#new addition for projects
+# Create projects in the sub-folders (US: management, build, networking)
+module "projects" {
+  source  = "terraform-google-modules/project-factory/google"
+  version = "~> 16.0"
+
+  for_each = toset([for k, v in var.folder_map["aera-build-infra-services"]["US"] : k])
+
+  name       = "${each.key}-project"
+  org_id     = var.org_id
+  folder_id  = module.sub_folders1["aera-build-infra-services=1>US"].id
+  billing_account = var.billing_account_id
+
+  labels = {
+    folder = each.key
+  }
+
+  iam = [
+    {
+      role   = "roles/editor"
+      member = "user:${var.project_owner_email}"
+    },
+  ]
+}
+
+# Optional: IAM Binding for folders
+resource "google_folder_iam_member" "folder_iam" {
+  for_each = toset(local.sub_folders1_var)
+
+  folder = module.sub_folders1[each.value].id
+  role   = "roles/resourcemanager.folderAdmin"
+  member = "user:${var.project_owner_email}"
+}
