@@ -51,12 +51,15 @@ module "projects" {
     folder = each.key
   }
 
-  iam = [
-    {
-      role   = "roles/editor"
-      member = "user:${var.project_owner_email}"
-    },
-  ]
+}
+
+# IAM Binding for projects
+resource "google_project_iam_member" "project_iam" {
+  for_each = toset([for k in var.folder_map["aera-build-infra-services"]["US"] : k])
+
+  project = module.projects[each.key].project_id
+  role    = "roles/editor"
+  member  = "user:${var.project_owner_email}"
 }
 
 # Optional: IAM Binding for folders
