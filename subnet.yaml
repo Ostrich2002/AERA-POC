@@ -1,0 +1,12 @@
+apiVersion: compute.gcp.upbound.io/v1beta1
+kind: Subnetwork
+metadata:
+  name: my-subnet                     # Name of the subnet
+spec:
+  forProvider:
+    ipCidrRange: "10.0.0.0/24"        # Specify the IP range for the subnet
+    region: us-central1               # Specify the GCP region for the subnet
+    network: my-vpc                   # The VPC network to associate the subnet with
+    privateIpGoogleAccess: true       # Allow private Google access
+  providerConfigRef:
+    name: default                     # Reference to the ProviderConfig you created
