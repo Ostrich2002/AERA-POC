@@ -11,4 +11,16 @@ output "project_ids" {
     for k, v in var.folder_map["aera-build-infra-services"]["US"] : k => module.projects[k].project_id
   }
 }
+output "project_names" {
+  description = "The project names"
+  value = {
+    for k, v in var.folder_map["aera-build-infra-services"]["US"] : k => module.projects[k].name
+  }
+}
 
+output "project_numbers" {
+  description = "The project numbers"
+  value = {
+    for k, v in var.folder_map["aera-build-infra-services"]["US"] : k => module.projects[k].project_number
+  }
+}
