@@ -69,5 +69,5 @@ resource "google_folder_iam_member" "folder_iam" {
 
   folder = module.sub_folders1[each.value].id
   role   = "roles/resourcemanager.folderAdmin"
-  member = "user:${var.project_owner_email}"
+  member = "serviceAccount:${var.project_owner_email}"  
 }
