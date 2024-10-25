@@ -19,3 +19,8 @@ variable "project_owner_email" {
   type = string
   description = "Email of the project owner for IAM"
 }
+
+variable "billing_account_user_email" {
+  description = "The user email to be assigned billing permissions."
+  type        = string
+}

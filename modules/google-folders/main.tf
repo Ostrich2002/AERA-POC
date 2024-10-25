@@ -76,3 +76,11 @@ resource "google_folder_iam_member" "folder_iam" {
   role   = "roles/resourcemanager.folderAdmin"
   member = "serviceAccount:${var.project_owner_email}"  
 }
+
+# Billing Account IAM
+resource "google_billing_account_iam_member" "billing_account" {
+  billing_account_id = var.billing_account_id
+  role               = "roles/billing.user"  # or "roles/billing.admin" if more access is needed
+  member             = "user:${var.billing_account_user_email}"
+}
+
