@@ -54,14 +54,19 @@ module "projects" {
 }
 
 # IAM Binding for projects
+# resource "google_project_iam_member" "project_iam" {
+#   for_each = { for k in keys(var.folder_map["aera-build-infra-services"]["US"]) : k => k }
+
+#   project = module.projects[each.key].project_id
+#   role    = "roles/editor"
+#   member  = "user:${var.project_owner_email}"
+# }
 resource "google_project_iam_member" "project_iam" {
   for_each = { for k in keys(var.folder_map["aera-build-infra-services"]["US"]) : k => k }
-
-  project = module.projects[each.key].project_id
-  role    = "roles/editor"
-  member  = "user:${var.project_owner_email}"
+  project  = module.projects[each.key].project_id
+  role     = "roles/editor"
+  member   = "serviceAccount:${var.project_owner_email}"  
 }
-
 
 # Optional: IAM Binding for folders
 resource "google_folder_iam_member" "folder_iam" {
