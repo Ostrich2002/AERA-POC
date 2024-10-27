@@ -90,8 +90,9 @@
 
 #---------------------------------------NEW APPROACH------------------------
 provider "google" {
-  project                     = var.admin_project_id
-  impersonate_service_account = "anshu.priya@cloudsufi.com"  # The user with Billing Account User role
+  alias                      = "impersonated"
+  project                    = var.admin_project_id
+  impersonate_service_account = "anshu.priya@cloudsufi.com"  # User with Billing Account User role
 }
 
 # Local variables for nested folders to target for project creation
@@ -146,17 +147,23 @@ resource "random_id" "project_suffix" {
 }
 
 # Loop over the target folders and create projects
+# Example of specifying the aliased provider in the project creation module
 module "projects" {
-  source      = "terraform-google-modules/project-factory/google"
-  version     = "~> 12.0"
+  source    = "terraform-google-modules/project-factory/google"
+  version   = "~> 12.0"
+  
+  providers = {
+    google = google.impersonated
+  }
 
-  for_each          = toset(local.target_folders)
-  name              = "project-${element(split("=2>", each.value), 1)}"
-  project_id        = "project-${element(split("=2>", each.value), 1)}-${random_id.project_suffix.hex}"
-  org_id            = var.org_id
-  billing_account   = var.billing_account
-  folder_id         = module.sub_folders2[each.value].id
+  for_each        = toset(local.target_folders)
+  name            = "project-${element(split("=2>", each.value), 1)}"
+  project_id      = "project-${element(split("=2>", each.value), 1)}-${random_id.project_suffix.hex}"
+  org_id          = var.org_id
+  billing_account = var.billing_account
+  folder_id       = module.sub_folders2[each.value].id
 }
+
 
 # IAM bindings for each created project
 resource "google_project_iam_member" "project_iam_bindings" {
