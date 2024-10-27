@@ -9,7 +9,7 @@ variable "folder_map" {
 }
 
 
-#new addition for folders
+#new addition for projects
 variable "billing_account_id" {
   type = string
   description = "Billing account ID for project creation"
