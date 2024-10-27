@@ -35,7 +35,7 @@ variable "org_id" {
 
 variable "folder_map" {
   description = "Map of folders to create under the organization."
-  type        = map(map(map(any)))
+  type        = any
 }
 
 variable "billing_account" {
