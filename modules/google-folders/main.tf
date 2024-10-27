@@ -166,11 +166,18 @@ module "projects" {
 
 
 # IAM bindings for each created project
-resource "google_project_iam_member" "project_role_bindings" {
-  for_each = { for role in var.project_permissions : role => toset(local.target_folders) }
+resource "google_project_iam_member" "project_permissions" {
+  for_each = { for k, v in module.projects : k => v }
 
-  project = module.projects[each.value].project_id
-  role    = each.key
+  project = each.value.project_id
+  role    = element(var.project_permissions, 0)  # Adjust this if you want to assign multiple roles
   member  = "user:${element(var.project_owners, 0)}"  # Replace with actual members
 }
 
+resource "google_project_iam_member" "project_editor" {
+  for_each = { for k, v in module.projects : k => v }
+
+  project = each.value.project_id
+  role    = element(var.project_permissions, 1)  # Adjust this if you want to assign multiple roles
+  member  = "user:${element(var.project_owners, 0)}"  # Replace with actual members
+}
