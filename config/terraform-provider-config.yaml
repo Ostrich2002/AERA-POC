@@ -23,7 +23,7 @@ spec:
   configuration: |
     provider "google" {
       credentials = "gcp-credentials.json"
-      project     = "cssandbox-428114"
+      project     = "supply-chain-twin-349311"
     }
 
     // Modules _must_ use remote state. The provider does not persist state.

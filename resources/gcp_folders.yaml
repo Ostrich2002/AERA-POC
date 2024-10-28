@@ -7,7 +7,7 @@ metadata:
 spec:
   forProvider:
     source: Remote
-    module: git::https://github.com/aera-jawed/tf-gcp-infra//modules/google-folders?ref=v1.0.0
+    module: git::https://github.com/Ostrich2002/AERA-POC.git//modules/google-folders?ref=tf-gcp-infra
     varFiles:
     - source: SecretKey
       secretKeyRef:

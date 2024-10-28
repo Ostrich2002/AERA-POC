@@ -7,10 +7,10 @@ metadata:
 spec:
   forProvider:
     source: Remote
-    module: git::https://github.com/terraform-google-modules/terraform-google-folders?ref=v5.0.0
+    module: git::https://github.com/Ostrich2002/AERA-POC.git//modules/google-folders?ref=tf-gcp-infra
     vars:
     - key: parent
-      value: "organizations/287428293008"
+      value: "organizations/824324338876"
     # - key: names
     #   value: "[\"GCP Central Services\"]"
 

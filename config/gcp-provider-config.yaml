@@ -3,7 +3,7 @@ kind: ProviderConfig
 metadata:
   name: default
 spec:
-  projectID: cssandbox-428114
+  projectID: supply-chain-twin-349311
   credentials:
     source: Secret
     secretRef:
