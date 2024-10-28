@@ -92,7 +92,8 @@
 provider "google" {
   alias                      = "impersonated"
   project                    = var.admin_project_id
-  impersonate_service_account = "anshu.priya@cloudsufi.com"  # User with Billing Account User role
+  scopes                     = ["https://www.googleapis.com/auth/cloud-platform"]
+  impersonate_service_account = "anshu.priya@cloudsufi.com"  # User account to impersonate
 }
 
 # Local variables for nested folders to target for project creation
