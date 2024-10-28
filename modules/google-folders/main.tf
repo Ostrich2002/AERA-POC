@@ -254,7 +254,7 @@ resource "google_project_iam_member" "project_permissions" {
 
   project = each.value.project_id
   role    = element(var.project_permissions, 0)  # Modify roles as needed
-  member  = "user:${element(var.project_owners, 0)}"
+  member  = "serviceAccount:${element(var.project_owners, 0)}"
 }
 
 resource "google_project_iam_member" "project_editor" {
@@ -262,5 +262,5 @@ resource "google_project_iam_member" "project_editor" {
 
   project = each.value.project_id
   role    = element(var.project_permissions, 1)  # Modify roles as needed
-  member  = "user:${element(var.project_owners, 0)}"
+  member  = "serviceAccount:${element(var.project_owners, 0)}"
 }
