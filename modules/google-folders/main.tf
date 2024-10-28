@@ -238,31 +238,30 @@ resource "random_id" "project_suffix" {
   byte_length = 2
 }
 
-# Loop over the target folders and create projects without linking to billing
-module "projects" {
-  source    = "terraform-google-modules/project-factory/google"
-  version   = "~> 12.0"
+# Loop over target folders and create projects without linking to a billing account
+resource "google_project" "projects" {
+  for_each   = toset(local.target_folders)
+  name       = "project-${element(split("=2>", each.value), 1)}"
+  project_id = "project-${element(split("=2>", each.value), 1)}-${random_id.project_suffix.hex}"
+  org_id     = var.org_id
+  folder_id  = module.sub_folders2[each.value].id
 
-  for_each        = toset(local.target_folders)
-  name            = "project-${element(split("=2>", each.value), 1)}"
-  project_id      = "project-${element(split("=2>", each.value), 1)}-${random_id.project_suffix.hex}"
-  org_id          = var.org_id
-  folder_id       = module.sub_folders2[each.value].id
+  # Omit the billing account to avoid linking at project creation
 }
 
-# IAM bindings for each created project (optional, modify as needed)
+# Optional: IAM bindings for each created project
 resource "google_project_iam_member" "project_permissions" {
-  for_each = { for k, v in module.projects : k => v }
+  for_each = { for k, v in google_project.projects : k => v }
 
   project = each.value.project_id
-  role    = element(var.project_permissions, 0)  # Adjust this if you want to assign multiple roles
-  member  = "user:${element(var.project_owners, 0)}"  # Replace with actual members
+  role    = element(var.project_permissions, 0)  # Modify roles as needed
+  member  = "user:${element(var.project_owners, 0)}"
 }
 
 resource "google_project_iam_member" "project_editor" {
-  for_each = { for k, v in module.projects : k => v }
+  for_each = { for k, v in google_project.projects : k => v }
 
   project = each.value.project_id
-  role    = element(var.project_permissions, 1)  # Adjust this if you want to assign multiple roles
-  member  = "user:${element(var.project_owners, 0)}"  # Replace with actual members
+  role    = element(var.project_permissions, 1)  # Modify roles as needed
+  member  = "user:${element(var.project_owners, 0)}"
 }
