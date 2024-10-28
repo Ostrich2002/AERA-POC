@@ -245,7 +245,8 @@ resource "google_project" "projects" {
   project_id = "project-${element(split("=2>", each.value), 1)}-${random_id.project_suffix.hex}"
   folder_id  = module.sub_folders2[each.value].id
 
-  # Omit the billing account to avoid linking at project creation
+  # Link to a billing account
+  billing_account = var.billing_account
 }
 
 # Optional: IAM bindings for each created project
