@@ -243,7 +243,6 @@ resource "google_project" "projects" {
   for_each   = toset(local.target_folders)
   name       = "project-${element(split("=2>", each.value), 1)}"
   project_id = "project-${element(split("=2>", each.value), 1)}-${random_id.project_suffix.hex}"
-  org_id     = var.org_id
   folder_id  = module.sub_folders2[each.value].id
 
   # Omit the billing account to avoid linking at project creation
