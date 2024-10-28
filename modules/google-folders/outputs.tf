@@ -28,17 +28,35 @@
 
 
 #-------------------------NEW APPROACH--------------------------
-output "folder_ids" {
-  value = [[for k, v in var.folder_map : module.folders[k].ids], [for i in local.sub_folders1_var : module.sub_folders1[i].ids], [for j in local.sub_folders2_var : module.sub_folders2[j].ids]]
-}
+# output "folder_ids" {
+#   value = [[for k, v in var.folder_map : module.folders[k].ids], [for i in local.sub_folders1_var : module.sub_folders1[i].ids], [for j in local.sub_folders2_var : module.sub_folders2[j].ids]]
+# }
+# output "project_ids" {
+#   value = { for k, proj in module.projects : k => proj.project_id if contains(keys(module.projects), k) }
+# }
+
+# output "project_names" {
+#   value = { for k, proj in module.projects : k => proj.project_name if contains(keys(module.projects), k) }
+# }
+
+# output "project_numbers" {
+#   value = { for k, proj in module.projects : k => proj.project_number if contains(keys(module.projects), k) }
+# }
+
+
+
+#-----------------------------project creation without linking to billing account
 output "project_ids" {
-  value = { for k, proj in module.projects : k => proj.project_id if contains(keys(module.projects), k) }
+  description = "Project IDs for all created projects"
+  value       = { for k, proj in google_project.projects : k => proj.project_id }
 }
 
 output "project_names" {
-  value = { for k, proj in module.projects : k => proj.project_name if contains(keys(module.projects), k) }
+  description = "Project names for all created projects"
+  value       = { for k, proj in google_project.projects : k => proj.name }
 }
 
-output "project_numbers" {
-  value = { for k, proj in module.projects : k => proj.project_number if contains(keys(module.projects), k) }
+output "folder_ids" {
+  description = "Folder IDs for each created project"
+  value       = { for k, proj in google_project.projects : k => proj.folder_id }
 }
