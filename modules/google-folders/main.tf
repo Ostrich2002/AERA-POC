@@ -92,7 +92,7 @@
 provider "google" {
   alias                      = "impersonated"
   project                    = var.admin_project_id
-  scopes                     = ["https://www.googleapis.com/auth/cloud-platform"]
+  scopes                     = ["https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloud-billing"]
   impersonate_service_account = "anshu.priya@cloudsufi.com"  # User account to impersonate
 }
 
