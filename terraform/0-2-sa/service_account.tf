@@ -21,3 +21,15 @@ resource "google_project_iam_member" "gke_sa_iam_sa_user" {
   role    = "roles/iam.serviceAccountUser"
   member  = "serviceAccount:${google_service_account.gke_sa.email}"
 }
+
+resource "google_service_account_key" "gke_sa_key" {
+  service_account_id = google_service_account.gke_sa.id
+  private_key_type   = "TYPE_GOOGLE_CREDENTIALS_FILE"
+}
+
+
+# Output the path where the key is stored
+output "gke_sa_key_path" {
+  value = google_service_account_key.gke_sa_key.private_key
+  sensitive = true
+}

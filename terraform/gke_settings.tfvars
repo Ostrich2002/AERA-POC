@@ -1,6 +1,6 @@
 gke_settings =  {
   name                     = "aera-infra-demo-gke-cluster"
-  kubernetes_version       = "1.29.7"
+  kubernetes_version       = "1.30.5-gke.1014003"
   regional                 = true
   region                   = "us-central1"
   zones                    = ["us-central1-a", "us-central1-b", "us-central1-c"]

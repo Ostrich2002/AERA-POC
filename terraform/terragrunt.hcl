@@ -1,6 +1,6 @@
 /*locals {
   inputs_from_tfvars = jsondecode(read_tfvars_file("${path_relative_from_include()}/gke_settings.tfvars"))
-  project       = "supply-chain-twin-349311"
+  project       = "project-build-2bb6"
   region        = "us-central1"
   state_bucket  = "aera-infra-tf-state-${local.project}"
   environment   = "build"
@@ -11,7 +11,7 @@ locals {
   inputs_from_tfvars = jsondecode(read_tfvars_file("${path_relative_from_include()}/gke_settings.tfvars"))
 
   # Project and environment settings
-  project       = "supply-chain-twin-349311"
+  project       = "project-build-2bb6"
   region        = "us-central1"
   state_bucket  = "aera-infra-tf-state-${local.project}"
   environment   = "build"
