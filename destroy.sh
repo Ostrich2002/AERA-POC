@@ -27,13 +27,19 @@ gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$REGION" --p
 # Stage 2: Crossplane
 stage=2
 level=2
-# Destroy Crossplane only if GKE outputs are available
-if terragrunt output-all --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "<expected-output-name>"; then
-    echo "GKE outputs found. Proceeding with Crossplane destruction."
-    destroy_terragrunt "${BASE_DIR}/${stage}-${level}-crossplane"
-else
-    echo "GKE outputs not found. Skipping Crossplane destruction."
-fi
+destroy_terragrunt "${BASE_DIR}/${stage}-${level}-crossplane"
+
+# # Destroy Crossplane only if GKE outputs are available
+# if terragrunt output-all --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "endpoint" && \
+#    terragrunt output-all --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "access_token" && \
+#    terragrunt output-all --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "cluster_ca_certificate" && \
+#    terragrunt output-all --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "cluster_name" && \
+#    terragrunt output-all --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "kubeconfig"; then
+#     echo "GKE outputs found. Proceeding with Crossplane destruction."
+#     destroy_terragrunt "${BASE_DIR}/${stage}-${level}-crossplane"
+# else
+#     echo "GKE outputs not found. Skipping Crossplane destruction."
+# fi
 
 # Stage 2: Argo CD
 stage=2

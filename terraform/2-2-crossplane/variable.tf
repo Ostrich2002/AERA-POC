@@ -1,3 +1,15 @@
+variable "gke_cluster_name" {
+  description = "The name of the GKE cluster."
+  type = string
+  nullable = false
+}
+
+variable "region" {
+  description = "The name of the GCP region."
+  type = string
+  nullable = false
+}
+
 variable "namespace" {
   description = "Namespace in which to install Crossplane"
   type        = string
@@ -16,6 +28,17 @@ variable "provider_gcp_chart_version" {
   default     = "0.21.1"  # Ensure this matches the version in crossplane.tf
 }
 
-variable "host" {}
-variable "token" {}
-variable "cluster_ca_certificate" {}
+variable "host" {
+  type    = string
+  default = ""
+}
+
+variable "token" {
+  type    = string
+  default = ""
+}
+
+variable "cluster_ca_certificate" {
+  type    = string
+  default = ""
+}

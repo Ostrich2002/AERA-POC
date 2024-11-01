@@ -6,12 +6,33 @@
 #   }
 # }
 
+# provider "helm" {
+#   kubernetes {
+#     host                   = "https://${var.host}"
+#     token                  = var.token
+#     cluster_ca_certificate = var.cluster_ca_certificate
+#   }
+# }
+
+data "google_container_cluster" "this" {
+  name     = var.gke_cluster_name
+  location = var.region
+}
+
+data "google_client_config" "this" {}
+
 provider "helm" {
   kubernetes {
-    host                   = "https://${var.host}"
-    token                  = var.token
-    cluster_ca_certificate = var.cluster_ca_certificate
+    host                   = "https://${data.google_container_cluster.this.endpoint}"
+    token                  = data.google_client_config.this.access_token
+    cluster_ca_certificate = base64decode(data.google_container_cluster.this.master_auth[0].cluster_ca_certificate)
   }
+}
+
+provider "kubernetes" {
+  host                   = "https://${data.google_container_cluster.this.endpoint}"
+  token                  = data.google_client_config.this.access_token
+  cluster_ca_certificate = base64decode(data.google_container_cluster.this.master_auth[0].cluster_ca_certificate)
 }
 
 
@@ -35,23 +56,23 @@ resource "helm_release" "crossplane" {
   ]
 }
 
-# Optional: Crossplane GCP Provider Configuration
-resource "helm_release" "provider_gcp" {
-  depends_on       = [helm_release.crossplane]
-  name             = "provider-gcp"
-  repository       = "https://charts.crossplane.io/stable"
-  chart            = "provider-gcp"
-  namespace        = var.namespace
-  version          = var.provider_gcp_chart_version
+# # Optional: Crossplane GCP Provider Configuration
+# resource "helm_release" "provider_gcp" {
+#   depends_on       = [helm_release.crossplane]
+#   name             = "provider-gcp"
+#   repository       = "https://charts.crossplane.io/stable"
+#   chart            = "provider-gcp"
+#   namespace        = var.namespace
+#   version          = var.provider_gcp_chart_version
 
-  values = [
-    <<EOF
-      credentials:
-        secretRef:
-          namespace: ${var.namespace}
-          name: gcp-creds
-          key: credentials.json
-    EOF
-  ]
-}
+#   values = [
+#     <<EOF
+#       credentials:
+#         secretRef:
+#           namespace: ${var.namespace}
+#           name: gcp-creds
+#           key: credentials.json
+#     EOF
+#   ]
+# }
 
