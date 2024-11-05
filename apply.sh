@@ -55,34 +55,7 @@ stage=2
 level=1
 apply_terragrunt "${BASE_DIR}/${stage}-${level}-argo-cd"  # Setup Argo CD
 
-# Stage 2: Crossplane (only if GKE outputs are available)
-# Check for multiple GKE outputs
-# if terragrunt run-all output --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "endpoint" && \
-#    terragrunt run-all output --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "access_token" && \
-#    terragrunt run-all output --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "cluster_ca_certificate" && \
-#    terragrunt run-all output --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "cluster_name" && \
-#    terragrunt run-all output --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl" | grep -q "kubeconfig"; then
-#   echo "All required GKE outputs found. Proceeding with Crossplane installation."
-
-
-#   stage=2
-#   level=2
-#   apply_terragrunt "${BASE_DIR}/${stage}-${level}-crossplane"  # Setup Crossplane
-# else
-#   echo "One or more required GKE outputs not found. Skipping Crossplane installation."
-# fi
-
-
 GKE_OUTPUTS=$(terragrunt run-all output --terragrunt-config "${BASE_DIR}/1-1-gke-cluster/terragrunt.hcl")
-
-# if [[ "$(echo "$GKE_OUTPUTS" | grep -q "endpoint")" && \
-#       "$(echo "$GKE_OUTPUTS" | grep -q "access_token")" && \
-#       "$(echo "$GKE_OUTPUTS" | grep -q "cluster_ca_certificate")" ]]; then
-#     echo "All required GKE outputs found. Proceeding with Crossplane installation."
-#     apply_terragrunt "${BASE_DIR}/2-2-crossplane"
-# else
-#     echo "One or more required GKE outputs not found. Skipping Crossplane installation."
-# fi
 
 stage=2
 level=2
