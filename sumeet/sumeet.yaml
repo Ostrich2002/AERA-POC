@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane-installation
+  namespace: argo-cd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.crossplane.io/stable  # Crossplane Helm repository
+    chart: crossplane                            # Chart name
+    targetRevision: 1.10.0                       # Version of the Helm chart
+  destination:
+    server: https://kubernetes.default.svc       # In-cluster Kubernetes API server
+    namespace: crossplane-system
+  syncPolicy:
+    automated:
+      prune: true                                # Prune resources that are no longer in the repo
+      selfHeal: true                             
+    syncOptions:
+    - CreateNamespace=true                     
